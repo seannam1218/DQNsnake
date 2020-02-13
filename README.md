@@ -1,10 +1,8 @@
-# starter-snake-python
+# DQN Snake
 
-A simple [Battlesnake AI](http://battlesnake.io) written in Python. 
+A [Battlesnake AI](http://battlesnake.io) written in Python. 
 
-Visit [https://github.com/battlesnakeio/community/blob/master/starter-snakes.md](https://github.com/battlesnakeio/community/blob/master/starter-snakes.md) for API documentation and instructions for running your AI.
-
-This AI client uses the [bottle web framework](http://bottlepy.org/docs/dev/index.html) to serve requests and the [gunicorn web server](http://gunicorn.org/) for running bottle on Heroku. Dependencies are listed in [requirements.txt](requirements.txt).
+This AI client uses the [bottle web framework](http://bottlepy.org/docs/dev/index.html) to serve requests. Dependencies are listed in [requirements.txt](requirements.txt).
 
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
@@ -16,12 +14,9 @@ This AI client uses the [bottle web framework](http://bottlepy.org/docs/dev/inde
 
 ## Running the Snake Locally
 
-1) [Fork this repo](https://github.com/battlesnakeio/starter-snake-python/fork).
+1) Fork this repo
 
 2) Clone repo to your development environment:
-```
-git clone git@github.com:<your github username>/starter-snake-python.git
-```
 
 3) Install dependencies using [pip](https://pip.pypa.io/en/latest/installing.html):
 ```
@@ -60,7 +55,3 @@ or visit [http://APP_NAME.herokuapp.com](http://APP_NAME.herokuapp.com).
 ```
 heroku logs --tail
 ```
-
-## Questions?
-
-Email [hello@battlesnake.com](mailto:hello@battlesnake.com), or tweet [@battlesnakeio](http://twitter.com/battlesnakeio).
