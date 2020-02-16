@@ -2,27 +2,32 @@ import json
 import os
 import random
 import bottle
+import copy
 
 from api import ping_response, start_response, move_response, end_response
 
-ID = 'de508402-17c8-4ac7-ab0b-f96cb53fbee8'
-MYSNAKE = 'M'
-SNAKE = 'S'
-WALL = 'W'
-FOOD = 'F'
-GOLD = 'G'
-SAFTEY = '-'
+maxwidth = 11+2
+maxheight = 11+2
+prev_move = None
+
+LAND = '_' #[1,0,0,0,0]
+MYSNAKE = 'M' #[0,1,0,0,0]
+SNAKE = 'S' #[0,0,1,0,0]
+WALL = 'W' #[0,0,0,1,0]
+FOOD = 'F' #[0,0,0,0,1]
+
 
 # Print the state of the game in grid format in the command line interface.
 def printgrid(grid):
 	for row in grid:
 		print(' '.join(row))
+		#print(''.join(str(row)))
 
 # Make new grid and store the state information in the grid
-def init(data):
+def load(data):
 	width = data['board']['width']
 	height = data['board']['height']
-	grid = [['_' for i in range(width)] for j in range(height)]
+	grid = [[LAND for i in range(width)] for j in range(height)]
 
 	#print("enemy snake body: " + str(data['board']['snakes']))
 	for snake in data['board']['snakes']:
@@ -36,8 +41,41 @@ def init(data):
 	for f in data['board']['food']:
 		grid[f['y']][f['x']] = FOOD
 
+	pad_walls(grid)
+
 	return grid
 
+
+def pad_walls(grid):
+	#pad the top wall
+	width = len(grid[0])
+	horz_wall = [WALL for i in range(width)]
+	grid.insert(0, copy.deepcopy(horz_wall))
+
+	#pad the bottom wall
+	bottom_pad_size = maxheight - len(grid)
+	for i in range(bottom_pad_size):
+		grid.append(copy.deepcopy(horz_wall))
+
+	#pad the left wall
+	for j in range(maxheight):
+		grid[j].insert(0, WALL)
+
+	#pad the right wall
+	right_pad_size = maxwidth - len(grid[0])
+	for k in range(maxheight):
+		for l in range(right_pad_size):
+			grid[k].append(WALL)
+
+	return 
+
+
+def check_alive():
+	alive = 0
+	
+		
+
+	return alive
 
 ###################################
 ########## SERVER CALLS ###########
@@ -74,8 +112,8 @@ def ping():
 @bottle.post('/start')
 def start():
 	data = bottle.request.json
-	grid = init(data)
-	printgrid(grid)
+	grid = load(data)
+	# printgrid(grid)
 
 
 	"""
@@ -83,28 +121,32 @@ def start():
 		    initialize your snake state here using the
 		    request's data if necessary.
 	"""
-	#print(json.dumps(data))
 
 	color = "#000550"
 
+	#print(json.dumps(data, indent=4))
 	return start_response(color)
 
 
 @bottle.post('/move')
 def move():
 	data = bottle.request.json
-	grid = init(data)
+	grid = load(data)
 	printgrid(grid)
 
-	"""
-	TODO: Using the data from the endpoint request object, your
-		    snake AI must choose a direction to move in.
-	"""
-	#print(json.dumps(data))
+	turn = data['turn']	
+	check_alive(data['you'], data['snakes'])
 
+	print('\n')
+	print('turn: ' + str(turn))
+
+	#Use trained DQN network to choose a direction to move in
 	directions = ['up', 'down', 'left', 'right']
+	
 	direction = random.choice(directions)
+	print('direction: ' + direction + '\n')
 
+	prev_move = direction
 	return move_response(direction)
 
 
@@ -112,12 +154,12 @@ def move():
 def end():
 	data = bottle.request.json
 
-	"""
-	TODO: If your snake AI was stateful,
-		clean up any stateful objects here.
-	"""
-	#print(json.dumps(data))
+	print(json.dumps(data, indent=4))
 	print('\n============GAMEOVER==============\n')
+
+	#concat the state info to a json file
+
+
 	return end_response()
 
 
